@@ -1,0 +1,39 @@
+{
+  "presets": {
+  },
+  "validations": {
+    "integer_gt_zero": {
+      "description": "a whole number > 0",
+      "args": [
+	 "duration",
+	 "period",
+	 "runtime",
+	 "threshold"
+      ],
+      "vals": "^[1-9][0-9]*$"
+    },
+    "integer_range": {
+      "description": "a range of whole numbers >= 0",
+      "args": [
+	 "cpus"
+      ],
+      "vals": "(\\d+(-\\d+)?(,\\s*\\d+(-\\d+)?)*|\\d+(-\\d+)?)"
+    },
+    "priority": {
+      "description": "priority of the hwnoise process",
+      "args": [
+	 "priority"
+      ],
+      "vals": "^[for]:([0-9]|[1-9][0-9])$"
+    },
+    "onoff": {
+      "description": "on|off",
+      "args": [
+	 "smt"
+      ],
+      "vals": "on|off"
+    }
+
+  }
+}
+

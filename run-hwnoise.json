@@ -1,0 +1,56 @@
+{
+    "benchmarks": [
+        {
+            "name": "hwnoise",
+            "ids": "1",
+            "mv-params": {
+                "global-options": [
+                    {
+                        "name": "global",
+                        "params": [
+                            { "arg": "duration", "vals": [ "10" ], "role": "client" },
+                            { "arg": "smt", "vals": [ "off" ], "role": "client" },
+                            { "arg": "priority", "vals": [ "o:0" ], "role": "client", "enabled": "no" }
+                        ]
+                    }
+                ],
+                "sets": [
+                    {
+                        "include": "global",
+                        "params": [
+                        ]
+                    }
+                ]
+            }
+        }
+    ],
+    "tool-params": [
+    ],
+    "tags": {
+    },
+    "endpoints": [
+        {
+            "type": "remotehosts",
+            "settings": {
+                "osruntime": "chroot"
+            },
+            "remotes": [
+		{
+                    "engines": [
+                        { "role": "client", "ids": "1" }
+                    ],
+                    "config": {
+                        "host": "target-host.example.com",
+                        "settings": {
+                            "cpu-partitioning": true
+                        }
+                    }
+                }
+            ]
+        }
+    ],
+    "run-params": {
+        "num-samples": 1,
+        "max-sample-failures": 1
+    }
+}

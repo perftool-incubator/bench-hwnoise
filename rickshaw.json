@@ -1,0 +1,29 @@
+{
+    "rickshaw-benchmark": {
+        "schema": {
+            "version": "2020.05.18"
+        }
+    },
+    "benchmark": "hwnoise",
+    "controller" : {
+        "post-script" : "%bench-dir%/hwnoise-post-process"
+    },
+    "client" : {
+        "files-from-controller": [
+            {
+                "src": "%bench-dir%/hwnoise-base",
+                "dest": "/usr/bin/"
+            },
+            {
+                "src": "%bench-dir%/hwnoise-client",
+                "dest": "/usr/bin/"
+            },
+            {
+                "src": "%bench-dir%/hwnoise-get-runtime",
+                "dest": "/usr/bin/"
+            }
+        ],
+        "runtime" : "hwnoise-get-runtime",
+        "start" : "hwnoise-client"
+    }
+}

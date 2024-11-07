@@ -1,0 +1,95 @@
+#!/usr/bin/env python3
+# -*- mode: python; indent-tabs-mode: nil; python-indent-level: 4 -*-
+# vim: autoindent tabstop=4 shiftwidth=4 expandtab softtabstop=4 filetype=python
+
+import sys
+import os
+#import lzma
+#import re
+#import copy
+import math
+import json
+import yaml
+#import argparse
+import glob
+from datetime import datetime
+from pathlib import Path
+
+TOOLBOX_HOME = os.environ.get('TOOLBOX_HOME')
+if TOOLBOX_HOME is None:
+    print("This script requires libraries that are provided by the toolbox project.")
+    print("Toolbox can be acquired from https://github.com/perftool-incubator/toolbox and")
+    print("then use 'export TOOLBOX_HOME=/path/to/toolbox' so that it can be located.")
+    exit(1)
+else:
+    p = Path(TOOLBOX_HOME) / 'python'
+    if not p.exists() or not p.is_dir():
+        print("ERROR: <TOOLBOX_HOME>/python ('%s') does not exist!" % (p))
+        exit(2)
+    sys.path.append(str(p))
+from toolbox.metrics import log_sample
+from toolbox.metrics import finish_samples
+
+params = {}
+
+def main():
+    iter_sample = {
+        'primary-period': "measurement",
+            'benchmark': "hwnoise",
+            'periods': [],
+            'rickshaw-bench-metric': { 'schema': { 'version': '2021.04.12' } }
+    }
+    iter_sample['primary-metric'] = 'polling-latency-usec'
+
+    period = { 'name': 'measurement', 'metric-files': [] }
+    file_id = '0'
+    desc = {'source':'hwnoise', 'class':'count', 'type':'polling-latency-usec'}
+    names = {}
+
+    time = {"begin": None, "end": None}
+
+    for f in ["begin", "end"]:
+        with open(f + ".txt", "rt", encoding="ascii") as file:
+            time[f] = int(float(file.read()) * 1000)
+
+    max_latency = -1
+    with open("hwnoise-bin-stderrout.txt", "rt", encoding="ascii") as file:
+        for line in file:
+            sample = line.split()
+            print(f"sample line = {sample}")
+            if len(sample) < 6:
+                print("Ignoring line (header)...")
+                continue
+            #[0]=cpu, [5]=maxnoise
+            if not sample[0].isdigit() or not sample[5].isdigit():
+                print("Ignoring line (header)...")
+                continue
+            sample_usec = int(sample[5])
+            print(f"sample_usec: {sample[5]}")
+            if sample_usec > max_latency:
+                max_latency = sample_usec
+                print(f"New max_latency is {max_latency}!")
+
+        print(f"file_id: {file_id}")
+        print(f"desc: {desc}")
+        print(f"names: {names}")
+
+        sample = {'begin': time["begin"], 'end': time["end"], 'value': max_latency}
+        print("Recording log sample...")
+        print(f"    begin: {sample['begin']}")
+        print(f"    end: {sample['end']}")
+        print(f"    value: {sample['value']}")
+
+        log_sample(file_id, desc, names, sample)
+        metric_file_name = finish_samples()
+        period['metric-files'].append(metric_file_name)
+        iter_sample['periods'].append(period)
+
+    print(f"iter_sample: {iter_sample}")
+    with open('post-process-data.json', 'wt', encoding="ascii") as file:
+        file.write(json.dumps(iter_sample))
+
+    return(0)
+
+if __name__ == "__main__":
+    exit(main())
