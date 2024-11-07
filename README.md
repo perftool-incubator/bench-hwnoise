@@ -1,2 +1,2 @@
 # bench-hwnoise
-rtla-hwnoise benchmark
+The rtla hwnoise benchmark detects and quantifies hardware-related noise

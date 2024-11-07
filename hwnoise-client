@@ -1,0 +1,145 @@
+#!/bin/bash
+# -*- mode: sh; indent-tabs-mode: nil; sh-basic-offset: 4 -*-
+# vim: autoindent tabstop=4 shiftwidth=4 expandtab softtabstop=4 filetype=bash
+exec >hwnoise-client-stderrout.txt
+exec 2>&1
+
+. /usr/bin/hwnoise-base || (echo "/usr/bin/hwnoise-base not found"; exit 1)
+
+dump_runtime
+validate_label
+validate_sw_prereqs
+
+if [ -z "${WORKLOAD_CPUS}" ]; then
+    exit_error "WORKLOAD_CPUS is not defined. This must be defined to run hwnoise"
+else
+    echo "WORKLOAD_CPUS: ${WORKLOAD_CPUS}"
+fi
+if [ -z "${HK_CPUS}" ]; then
+    exit_error "HK_CPUS is not defined.  This must be defined to run hwnoise"
+else
+    echo "HK_CPUS: ${HK_CPUS}"
+fi
+
+no_load_balance=0
+threshold=1
+priority=""
+duration=60
+smt="on"
+period=1000000
+runtime=950000
+
+opts=$(getopt -q -o "" --longoptions "cpus:,threshold:,priority:,no-load-balance:,duration:,smt:,period:,runtime:" -n "getopt.sh" -- "$@");
+if [ $? -ne 0 ]; then
+    printf -- "\tUnrecognized option specified\n\n"
+    exit 1
+fi
+eval set -- "$opts";
+while true; do
+    case "$1" in
+        --cpus)
+            shift;
+            cpus=$1
+            shift;
+            ;;
+        --threshold)
+            shift;
+            threshold=$1
+            shift;
+            ;;
+        --priority)
+            shift;
+            priority="--priority $1"
+            shift;
+            ;;
+        --duration)
+            shift;
+            duration=$1
+            shift;
+            ;;
+	--smt)
+	    shift
+	    smt=$1
+	    shift
+	    ;;
+        --period)
+	    shift
+	    period=$1
+	    shift
+	    ;;
+        --runtime)
+	    shift
+	    runtime=$1
+	    shift
+	    ;;
+        --no-load-balance)
+            shift;
+            no_load_balance=$1
+            shift;
+            ;;
+        --)
+            shift;
+            break
+            ;;
+        *)
+            echo "Invalid option: $1"
+            exit 1
+    esac
+done
+
+if [ "$no_load_balance" == "1" ]; then
+     disable_balance $cpus_list
+fi
+
+# adjust CPUs to use
+cpu_str=""
+for cpu in $(echo $WORKLOAD_CPUS | sed -e "s/,/ /g"); do
+    cpu_str+=" --cpu $cpu"
+done
+cmd="${TOOLBOX_HOME}/bin/get-cpus-ordered.py --smt ${smt} ${cpu_str}"
+echo "about to run: ${cmd}"
+CMD_OUTPUT=$(${cmd})
+echo -e "${CMD_OUTPUT}"
+WORKLOAD_CPUS=$(echo -e "${CMD_OUTPUT}" | grep "final cpus:" | awk '{ print $3 }')
+echo "WORKLOAD_CPUS: ${WORKLOAD_CPUS}"
+
+# Run on the workload cpus (exclude hk cpus by default)
+if [ -z ${cpus} ]; then
+    cpus=${WORKLOAD_CPUS}
+fi
+
+echo
+cmd="rtla hwnoise --help"
+echo "About to run: $cmd"
+$cmd
+echo
+cmd="rtla hwnoise --version"
+echo "About to run: $cmd"
+$cmd
+echo
+
+output=$(validate_clocksource)
+if [ $? != 0 ]; then
+    exit_error "${output}"
+fi
+
+cmd="taskset -c ${WORKLOAD_CPUS} rtla hwnoise --quiet --duration ${duration}s --threshold ${threshold} --cpus ${WORKLOAD_CPUS} --period ${period} --runtime ${runtime} $priority"
+echo "About to run: $cmd"
+date +%s.%N >begin.txt
+$cmd >hwnoise-bin-stderrout.txt 2>&1
+rc=$?
+date +%s.%N >end.txt
+
+output=$(validate_clocksource)
+if [ $? != 0 ]; then
+    exit_error "${output}"
+fi
+
+
+if [ "$no_load_balance" == "1" ]; then
+     enable_balance $cpus_list
+fi
+
+if [ $rc -gt 0 ]; then
+    exit_error "`cat hwnoise-bin-stderrout.txt`"
+fi

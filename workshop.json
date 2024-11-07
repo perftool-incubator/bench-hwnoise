@@ -1,0 +1,26 @@
+{
+    "workshop": {
+        "schema": {
+            "version": "2024.08.07"
+        }
+    },
+    "userenvs": [
+        {
+            "name": "default",
+            "requirements": [
+                "appstream"
+            ]
+        }
+    ],
+    "requirements": [
+        {
+            "name": "appstream",
+            "type": "distro",
+            "distro_info": {
+                "packages": [
+		    "rtla"
+		]
+            }
+        }
+    ]
+}
