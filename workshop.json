@@ -8,18 +8,102 @@
         {
             "name": "default",
             "requirements": [
-                "appstream"
+		        "packages",
+		        "gettext_src",
+		        "flex_src",
+                "libtraceevent_src",
+		        "libtracefs_src",
+		        "linux_src"
             ]
         }
     ],
     "requirements": [
         {
-            "name": "appstream",
+            "name": "packages",
             "type": "distro",
             "distro_info": {
                 "packages": [
-		    "rtla"
+		            "python3-docutils"
 		]
+            }
+        },
+        {
+            "name": "gettext_src",
+            "type": "source",
+            "source_info": {
+                "url": "https://ftp.gnu.org/pub/gnu/gettext/gettext-0.22.4.tar.xz",
+                "filename": "gettext.tar.xz",
+                "commands": {
+                    "unpack": "tar -xf gettext.tar.xz",
+                    "get_dir": "tar -tf gettext.tar.xz | head -n 1",
+                    "commands": [
+                        "./configure gl_cv_func_getcwd_path_max='yes, but with shorter paths'",
+                        "make install",
+                        "rm -rf *"
+                    ]
+                }
+            }
+        },
+        {
+            "name": "flex_src",
+            "type": "source",
+            "source_info": {
+                "url": "https://github.com/westes/flex/files/981163/flex-2.6.4.tar.gz",
+                "filename": "flex.tar.gz",
+                "commands": {
+                    "unpack": "tar -xf flex.tar.gz",
+                    "get_dir": "tar -tf flex.tar.gz | head -n 1",
+                    "commands": [
+                        "./autogen.sh",
+                        "./configure CFLAGS=' -D_GNU_SOURCE'",
+                        "make install",
+                        "rm -rf *"
+                    ]
+                }
+            }
+        },
+	{
+	    "name": "libtraceevent_src",
+	    "type": "manual",
+	    "manual_info": {
+		"commands": [
+		    "git clone git://git.kernel.org/pub/scm/libs/libtrace/libtraceevent.git /usr/local/src/libtraceevent",
+		    "cd /usr/local/src/libtraceevent; git checkout libtraceevent-1.8.4",
+		    "cd /usr/local/src/libtraceevent; make",
+		    "cd /usr/local/src/libtraceevent; make install",
+                    "cd /usr/local/src; rm libtraceevent -rf"
+		]
+	    }
+	},
+	{
+	    "name": "libtracefs_src",
+	    "type": "manual",
+	    "manual_info": {
+		"commands": [
+		    "git clone git://git.kernel.org/pub/scm/libs/libtrace/libtracefs.git /usr/local/src/libtracefs",
+		    "cd /usr/local/src/libtracefs; git checkout libtracefs-1.8.1",
+		    "cd /usr/local/src/libtracefs; make",
+		    "cd /usr/local/src/libtracefs; make install",
+                    "cd /usr/local/src; rm libtracefs -rf"
+		]
+	    }
+	},
+        {
+            "name": "linux_src",
+            "type": "source",
+            "source_info": {
+                "url": "https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/snapshot/linux-6.11.tar.gz",
+                "filename": "linux.tar.gz",
+                "commands": {
+                    "unpack": "tar -xzf linux.tar.gz",
+                    "get_dir": "tar -tzf linux.tar.gz  | head -n 1",
+                    "commands": [
+                        "cd tools/tracing/rtla; make",
+                        "cd tools/tracing/rtla; make install",
+			"cd tools/tracing/rtla; make clean",
+			"rm * -rf"
+                    ]
+                }
             }
         }
     ]
