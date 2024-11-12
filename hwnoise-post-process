@@ -4,13 +4,9 @@
 
 import sys
 import os
-#import lzma
-#import re
-#import copy
 import math
 import json
 import yaml
-#import argparse
 import glob
 from datetime import datetime
 from pathlib import Path
@@ -81,7 +77,7 @@ def main():
         print(f"    value: {sample['value']}")
 
         log_sample(file_id, desc, names, sample)
-        metric_file_name = finish_samples()
+        metric_file_name = finish_samples(dont_delete=True)
         period['metric-files'].append(metric_file_name)
         iter_sample['periods'].append(period)
 
