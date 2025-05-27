@@ -29,7 +29,7 @@ smt="on"
 period=1000000
 runtime=950000
 
-opts=$(getopt -q -o "" --longoptions "cpus:,threshold:,priority:,no-load-balance:,duration:,smt:,period:,runtime:" -n "getopt.sh" -- "$@");
+opts=$(getopt -q -o "" --longoptions "cpus:,threshold:,priority:,no-load-balance:,duration:,smt:,period:,runtime:,house-keeping:,warm-up:" -n "getopt.sh" -- "$@");
 if [ $? -ne 0 ]; then
     printf -- "\tUnrecognized option specified\n\n"
     exit 1
@@ -38,24 +38,24 @@ eval set -- "$opts";
 while true; do
     case "$1" in
         --cpus)
-            shift;
+            shift
             cpus=$1
-            shift;
+            shift
             ;;
         --threshold)
-            shift;
+            shift
             threshold=$1
-            shift;
+            shift
             ;;
         --priority)
-            shift;
-            priority="--priority $1"
-            shift;
+            shift
+            priority_param=" --priority $1"
+            shift
             ;;
         --duration)
             shift;
             duration=$1
-            shift;
+            shift
             ;;
 	--smt)
 	    shift
@@ -73,10 +73,21 @@ while true; do
 	    shift
 	    ;;
         --no-load-balance)
-            shift;
+            shift
             no_load_balance=$1
-            shift;
+            shift
             ;;
+	--warm-up)
+	    shift
+	    warmup_param=" --warm-up $1"
+	    shift
+	    ;;
+        --house-keeping)
+	    shift
+	    house_keeping=$1
+	    hk_param=" --house-keeping ${house_keeping}"
+	    shift
+	    ;;
         --)
             shift;
             break
@@ -108,6 +119,15 @@ if [ -z ${cpus} ]; then
     cpus=${WORKLOAD_CPUS}
 fi
 
+# hk is the system (auto-detected) hk cpus by default (hwnoise uses cpu0)
+# We explicitly add hk cous to the taskset,
+# but we do NOT add --house-keeping param if not requested
+# e.g. taskset -c 0,1,2-31 rtla hwnoise --cpus 2-31 <other params without --house-keeping>
+if [ -z ${house_keeping} ]; then
+    house_keeping=${HK_CPUS}
+fi
+taskset_param="taskset -c ${house_keeping},${cpus}"
+
 echo
 cmd="rtla hwnoise --help"
 echo "About to run: $cmd"
@@ -123,7 +143,10 @@ if [ $? != 0 ]; then
     exit_error "${output}"
 fi
 
-cmd="taskset -c ${WORKLOAD_CPUS} rtla hwnoise --quiet --duration ${duration}s --threshold ${threshold} --cpus ${WORKLOAD_CPUS} --period ${period} --runtime ${runtime} $priority"
+cmd='${taskset_param} rtla hwnoise --quiet
+ --duration ${duration}s --threshold ${threshold} --cpus ${cpus}
+ --period ${period} --runtime ${runtime} ${priority_param} ${hk_param}
+ ${warmup_param}'
 echo "About to run: $cmd"
 date +%s.%N >begin.txt
 $cmd >hwnoise-bin-stderrout.txt 2>&1

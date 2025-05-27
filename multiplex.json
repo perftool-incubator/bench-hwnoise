@@ -8,14 +8,16 @@
 	 "duration",
 	 "period",
 	 "runtime",
-	 "threshold"
+	 "threshold",
+	 "warm-up"
       ],
       "vals": "^[1-9][0-9]*$"
     },
     "integer_range": {
       "description": "a range of whole numbers >= 0",
       "args": [
-	 "cpus"
+	 "cpus",
+	 "house-keeping"
       ],
       "vals": "(\\d+(-\\d+)?(,\\s*\\d+(-\\d+)?)*|\\d+(-\\d+)?)"
     },
