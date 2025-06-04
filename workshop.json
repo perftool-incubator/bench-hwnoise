@@ -92,11 +92,11 @@
             "name": "linux_src",
             "type": "source",
             "source_info": {
-                "url": "https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/snapshot/linux-6.11.tar.gz",
+		"url": "https://cdn.kernel.org/pub/linux/kernel/v6.x/linux-6.12.31.tar.xz",
                 "filename": "linux.tar.gz",
                 "commands": {
-                    "unpack": "tar -xzf linux.tar.gz",
-                    "get_dir": "tar -tzf linux.tar.gz  | head -n 1",
+                    "unpack": "tar -xf linux.tar.gz",
+                    "get_dir": "tar -tf linux.tar.gz  | head -n 1",
                     "commands": [
                         "cd tools/tracing/rtla; make",
                         "cd tools/tracing/rtla; make install",
