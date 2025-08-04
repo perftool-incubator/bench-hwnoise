@@ -8,19 +8,22 @@
         {
             "name": "default",
             "requirements": [
-		        "packages",
-			"bison_src",
-		        "gettext_src",
-		        "flex_src",
-                        "libtraceevent_src",
-		        "libtracefs_src",
-		        "linux_src"
+		        "packages"
             ]
         }
     ],
     "requirements": [
         {
             "name": "packages",
+            "type": "distro",
+            "distro_info": {
+                "packages": [
+		            "rtla"
+		]
+            }
+        },
+        {
+            "name": "src-dependencies",
             "type": "distro",
             "distro_info": {
                 "packages": [
