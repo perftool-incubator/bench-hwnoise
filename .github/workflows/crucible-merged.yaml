@@ -5,7 +5,7 @@ on:
     types: [ closed ]
     branches: [ main ]
     paths:
-    - .github/workflows/crucbile-merged.yaml
+    - .github/workflows/crucible-merged.yaml
     - workshop.json
   workflow_dispatch:
 
