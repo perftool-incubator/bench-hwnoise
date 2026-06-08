@@ -82,7 +82,7 @@ def main():
         iter_sample['periods'].append(period)
 
     print(f"iter_sample: {iter_sample}")
-    with open('post-process-data.json', 'wt', encoding="ascii") as file:
+    with open('postprocess/post-process-data.json', 'wt', encoding="ascii") as file:
         file.write(json.dumps(iter_sample))
 
     return(0)
