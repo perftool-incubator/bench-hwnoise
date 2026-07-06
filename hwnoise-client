@@ -120,7 +120,7 @@ if [ -z ${cpus} ]; then
 fi
 
 # hk is the system (auto-detected) hk cpus by default (hwnoise uses cpu0)
-# We explicitly add hk cous to the taskset,
+# We explicitly add hk cpus to the taskset,
 # but we do NOT add --house-keeping param if not requested
 # e.g. taskset -c 0,1,2-31 rtla hwnoise --cpus 2-31 <other params without --house-keeping>
 if [ -z ${house_keeping} ]; then
