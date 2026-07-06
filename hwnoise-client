@@ -99,7 +99,7 @@ while true; do
 done
 
 if [ "$no_load_balance" == "1" ]; then
-     disable_balance $cpus_list
+     disable_balance $WORKLOAD_CPUS
 fi
 
 # adjust CPUs to use
@@ -120,7 +120,7 @@ if [ -z ${cpus} ]; then
 fi
 
 # hk is the system (auto-detected) hk cpus by default (hwnoise uses cpu0)
-# We explicitly add hk cous to the taskset,
+# We explicitly add hk cpus to the taskset,
 # but we do NOT add --house-keeping param if not requested
 # e.g. taskset -c 0,1,2-31 rtla hwnoise --cpus 2-31 <other params without --house-keeping>
 if [ -z ${house_keeping} ]; then
@@ -160,7 +160,7 @@ fi
 
 
 if [ "$no_load_balance" == "1" ]; then
-     enable_balance $cpus_list
+     enable_balance $WORKLOAD_CPUS
 fi
 
 if [ $rc -gt 0 ]; then
