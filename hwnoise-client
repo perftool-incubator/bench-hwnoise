@@ -99,7 +99,7 @@ while true; do
 done
 
 if [ "$no_load_balance" == "1" ]; then
-     disable_balance $cpus_list
+     disable_balance $WORKLOAD_CPUS
 fi
 
 # adjust CPUs to use
@@ -160,7 +160,7 @@ fi
 
 
 if [ "$no_load_balance" == "1" ]; then
-     enable_balance $cpus_list
+     enable_balance $WORKLOAD_CPUS
 fi
 
 if [ $rc -gt 0 ]; then
