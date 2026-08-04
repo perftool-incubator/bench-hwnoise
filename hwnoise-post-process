@@ -38,7 +38,7 @@ def main():
 
     period = { 'name': 'measurement', 'metric-files': [] }
     file_id = '0'
-    desc = {'source':'hwnoise', 'class':'count', 'type':'polling-latency-usec'}
+    desc = {'source':'hwnoise', 'class':'latency', 'type':'polling-latency-usec', 'default-aggregation':'max'}
     names = {}
 
     time = {"begin": None, "end": None}
