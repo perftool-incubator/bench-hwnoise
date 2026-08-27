@@ -8,6 +8,8 @@ Scripts and configuration to run the [rtla hwnoise](https://man7.org/linux/man-p
 | File | Purpose |
 |------|---------|
 | `rickshaw.json` | Rickshaw integration: defines client scripts and parameter transformations |
+| `multiplex.json` | Parameter validation rules, unit conversions, and presets for multiplex |
+| `benchmark-metadata.json` | Machine-readable description and CDM-indexed source/type list (consumed by `crucible benchmarks list`) |
 | `hwnoise-base` | Base setup shared by other scripts |
 | `hwnoise-client` | Client-side benchmark execution |
 | `hwnoise-get-runtime` | Runtime extraction |

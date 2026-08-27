@@ -1,0 +1,22 @@
+{
+  "rickshaw-benchmark-metadata": {
+    "schema": {
+      "version": "2026.08.11"
+    }
+  },
+  "benchmark": "hwnoise",
+  "description": "Real-Time Linux Analysis (rtla) hardware noise tracer -- detects and measures hardware-induced latency spikes (SMIs, NMIs) on isolated cores.",
+  "cdm_indexed": true,
+  "cdm_sources": [
+    {
+      "source": "hwnoise",
+      "types": [
+        "polling-latency-usec"
+      ]
+    }
+  ],
+  "output_files": [
+    "hwnoise-bin-stderrout.txt",
+    "hwnoise-client-stderrout.txt"
+  ]
+}
