@@ -13,5 +13,5 @@ Scripts and configuration to run the [rtla hwnoise](https://man7.org/linux/man-p
 | `hwnoise-base` | Base setup shared by other scripts |
 | `hwnoise-client` | Client-side benchmark execution |
 | `hwnoise-get-runtime` | Runtime extraction |
-| `hwnoise-post-process` | Post-processing: parses hwnoise output into crucible metrics |
+| `hwnoise-post-process.py` | Post-processing: parses hwnoise output into crucible metrics |
 | `workshop.json` | Engine image build requirements |
