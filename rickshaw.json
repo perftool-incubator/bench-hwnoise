@@ -6,7 +6,7 @@
     },
     "benchmark": "hwnoise",
     "controller" : {
-        "post-script" : "%bench-dir%/hwnoise-post-process"
+        "post-script" : "%bench-dir%/hwnoise-post-process.py"
     },
     "client" : {
         "files-from-controller": [

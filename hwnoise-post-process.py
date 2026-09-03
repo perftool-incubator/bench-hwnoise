@@ -22,12 +22,13 @@ else:
         print("ERROR: <TOOLBOX_HOME>/python ('%s') does not exist!" % (p))
         exit(2)
     sys.path.append(str(p))
-from toolbox.metrics import log_sample
-from toolbox.metrics import finish_samples
+from toolbox.cdm_metrics import CDMMetrics
 
 params = {}
 
 def main():
+    metrics = CDMMetrics()
+
     iter_sample = {
         'primary-period': "measurement",
             'benchmark': "hwnoise",
@@ -75,8 +76,8 @@ def main():
         print(f"    end: {sample['end']}")
         print(f"    value: {sample['value']}")
 
-        log_sample(file_id, desc, names, sample)
-        metric_file_name = finish_samples(dont_delete=True)
+        metrics.log_sample(file_id, desc, names, sample)
+        metric_file_name = metrics.finish_samples(dont_delete=True)
         period['metric-files'].append(metric_file_name)
         iter_sample['periods'].append(period)
 
