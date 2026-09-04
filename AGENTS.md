@@ -5,7 +5,7 @@ Scripts and configuration to run the rtla hwnoise benchmark within the crucible 
 
 ## Language
 - Bash for client execution scripts
-- Python for post-processing (`hwnoise-post-process`)
+- Python for post-processing (`hwnoise-post-process.py`)
 
 ## Key Files
 | File | Purpose |
@@ -16,7 +16,7 @@ Scripts and configuration to run the rtla hwnoise benchmark within the crucible 
 | `hwnoise-base` | Base setup shared by other scripts |
 | `hwnoise-client` | Client-side benchmark execution |
 | `hwnoise-get-runtime` | Extracts runtime from command-line options |
-| `hwnoise-post-process` | Parses hwnoise output into crucible metrics |
+| `hwnoise-post-process.py` | Parses hwnoise output into crucible metrics |
 | `workshop.json` | Engine image build requirements |
 
 ## Conventions
